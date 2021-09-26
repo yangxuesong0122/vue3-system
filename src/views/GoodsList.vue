@@ -56,11 +56,13 @@
       </el-table-column>
     </el-table>
   </el-card>
+  <add-product :centerDialogVisible="centerDialogVisible" @closeDialog="closeDialog"/>
 </template>
 
 <script>
 import {onMounted, reactive, toRefs} from 'vue'
 import axios from 'axios'
+import AddProduct from './AddProduct.vue'
 
 function loadData(state) {
   axios.get('/products').then(res => {
@@ -70,25 +72,36 @@ function loadData(state) {
 
 export default {
   name: "GoodsList",
+  components: {
+    AddProduct
+  },
   setup() {
     const state = reactive({
       tableData: [],
       imgBaseUrl: import.meta.env.VITE_APP_URL,
-      searchContent: ''
+      searchContent: '',
+      centerDialogVisible: false
     })
     onMounted(() => {
       loadData(state)
     })
+    // 搜索
     const handleSearch = () => {
 
     }
+    // 打开添加页面
     const addGoodsInfo = () => {
-
+      state.centerDialogVisible = true
+    }
+    // 关闭弹框
+    const closeDialog = () => {
+      state.centerDialogVisible = false
     }
     return {
       ...toRefs(state),
       handleSearch,
-      addGoodsInfo
+      addGoodsInfo,
+      closeDialog
     }
   }
 }
