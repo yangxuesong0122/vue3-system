@@ -20,6 +20,13 @@
         </el-popover>
       </template>
     </el-table-column>
+    <el-table-column label="商品图片" width="180">
+      <template #default="scope">
+        <span style="margin-left: 10px">
+          <img :src="imgBaseUrl + scope.row.thumbnail" style="width: 100px;height: 100px"/>
+        </span>
+      </template>
+    </el-table-column>
     <el-table-column label="Operations">
       <template #default="scope">
         <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
@@ -37,7 +44,7 @@ import {onMounted, reactive, toRefs} from 'vue'
 import axios from 'axios'
 
 function loadData(state) {
-  axios.get('http://localhost:3005/products').then(res => {
+  axios.get('/products').then(res => {
     state.tableData = res.data
   })
 }
@@ -46,7 +53,8 @@ export default {
   name: "GoodsList",
   setup() {
     const state = reactive({
-      tableData: []
+      tableData: [],
+      imgBaseUrl: import.meta.env.VITE_APP_URL
     })
     onMounted(() => {
       loadData(state)
