@@ -1,42 +1,61 @@
 <template>
-  <el-table :data="tableData" style="width: 100%">
-    <el-table-column label="编号" width="180">
-      <template #default="scope">
-        <span style="margin-left: 10px">{{ scope.row.id }}</span>
-      </template>
-    </el-table-column>
-    <el-table-column label="商品名称" width="180">
-      <template #default="scope">
-        <el-popover effect="light" trigger="hover" placement="top">
-          <template #default>
-            <p>商品名称: {{ scope.row.title }}</p>
-            <p>单价: {{ scope.row.price }}</p>
-          </template>
-          <template #reference>
-            <div class="name-wrapper">
-              <el-tag size="medium">{{ scope.row.title }}</el-tag>
-            </div>
-          </template>
-        </el-popover>
-      </template>
-    </el-table-column>
-    <el-table-column label="商品图片" width="180">
-      <template #default="scope">
+  <el-card shadow="never">
+    <template #header>
+      <div class="card-header">
+        <img src="../assets/logo.png" style="width: 50px; height: 50px" />
+        <span>商品列表</span>
+      </div>
+    </template>
+    <el-row :gutter="10">
+      <el-col :span="4">
+        <el-input
+          placeholder="请输入搜索商品名称"
+          v-model="searchContent"></el-input>
+      </el-col>
+      <el-col :span="4">
+        <el-button type="primary" @click="handleSearch">搜索</el-button>
+        <el-button type="primary" @click="addGoodsInfo">添加</el-button>
+      </el-col>
+    </el-row>
+    <el-table :data="tableData" style="width: 100%">
+      <el-table-column label="编号" width="180">
+        <template #default="scope">
+          <span style="margin-left: 10px">{{ scope.row.id }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="商品名称" width="180">
+        <template #default="scope">
+          <el-popover effect="light" trigger="hover" placement="top">
+            <template #default>
+              <p>商品名称: {{ scope.row.title }}</p>
+              <p>单价: {{ scope.row.price }}</p>
+            </template>
+            <template #reference>
+              <div class="name-wrapper">
+                <el-tag size="medium">{{ scope.row.title }}</el-tag>
+              </div>
+            </template>
+          </el-popover>
+        </template>
+      </el-table-column>
+      <el-table-column label="商品图片" width="180">
+        <template #default="scope">
         <span style="margin-left: 10px">
           <img :src="imgBaseUrl + scope.row.thumbnail" style="width: 100px;height: 100px"/>
         </span>
-      </template>
-    </el-table-column>
-    <el-table-column label="Operations">
-      <template #default="scope">
-        <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-        <el-button
-          size="mini"
-          type="danger"
-          @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-      </template>
-    </el-table-column>
-  </el-table>
+        </template>
+      </el-table-column>
+      <el-table-column label="Operations">
+        <template #default="scope">
+          <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+          <el-button
+              size="mini"
+              type="danger"
+              @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+  </el-card>
 </template>
 
 <script>
@@ -54,18 +73,30 @@ export default {
   setup() {
     const state = reactive({
       tableData: [],
-      imgBaseUrl: import.meta.env.VITE_APP_URL
+      imgBaseUrl: import.meta.env.VITE_APP_URL,
+      searchContent: ''
     })
     onMounted(() => {
       loadData(state)
     })
+    const handleSearch = () => {
+
+    }
+    const addGoodsInfo = () => {
+
+    }
     return {
-      ...toRefs(state)
+      ...toRefs(state),
+      handleSearch,
+      addGoodsInfo
     }
   }
 }
 </script>
 
 <style scoped>
-
+.card-header {
+  display: flex;
+  align-items: center;
+}
 </style>
