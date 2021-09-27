@@ -47,7 +47,7 @@
       </el-table-column>
       <el-table-column label="Operations">
         <template #default="scope">
-          <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+          <el-button size="mini" @click="handleEdit(scope.row.id)">编辑</el-button>
           <el-button
             size="mini"
             type="danger"
@@ -64,13 +64,13 @@
       @current-change="changePage">
     </el-pagination>
   </el-card>
-  <add-product :centerDialogVisible="centerDialogVisible" @closeDialog="closeDialog"/>
+  <GoodsDialog ref="goodsDialog" :centerDialogVisible="centerDialogVisible" @closeDialog="closeDialog"/>
 </template>
 
 <script>
-import {onMounted, reactive, toRefs} from 'vue'
+import {onMounted, reactive, ref, toRefs} from 'vue'
 import axios from 'axios'
-import AddProduct from './AddProduct.vue'
+import GoodsDialog from './GoodsDialog.vue'
 import {ElMessageBox, ElNotification} from "element-plus"
 
 function loadData(state) {
@@ -126,9 +126,10 @@ function loadData(state) {
 export default {
   name: "GoodsList",
   components: {
-    AddProduct
+    GoodsDialog
   },
   setup() {
+    const goodsDialog = ref()
     const state = reactive({
       tableData: [],
       imgBaseUrl: import.meta.env.VITE_APP_URL,
@@ -143,11 +144,18 @@ export default {
     })
     // 搜索
     const handleSearch = () => {
-
+      loadData(state)
     }
     // 打开添加页面
     const addGoodsInfo = () => {
       state.centerDialogVisible = true
+      let params = {
+        dialogType: 'add',
+        goodId: null,
+        dialogTitle: '添加商品信息'
+      }
+      // 调用子组件方法
+      goodsDialog.value.openDialog(params)
     }
     // 关闭弹框
     const closeDialog = () => {
@@ -190,14 +198,27 @@ export default {
       state.currentPage = page
       loadData(state)
     }
+    // 编辑
+    const handleEdit = (id) => {
+      state.centerDialogVisible = true
+      let params = {
+        dialogType: 'edit',
+        goodId: id,
+        dialogTitle: '编辑商品信息'
+      }
+      // 调用子组件方法
+      goodsDialog.value.openDialog(params)
+    }
     return {
       ...toRefs(state),
       // ...useDelete(state),
+      goodsDialog,
       handleSearch,
       addGoodsInfo,
       closeDialog,
       handleDelete,
-      changePage
+      changePage,
+      handleEdit
     }
   }
 }
