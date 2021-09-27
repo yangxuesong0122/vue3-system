@@ -55,6 +55,14 @@
         </template>
       </el-table-column>
     </el-table>
+    <el-pagination
+      background
+      layout="prev, pager, next"
+      :total="total"
+      :page-size="pageSize"
+      :current-page="currentPage"
+      @current-change="changePage">
+    </el-pagination>
   </el-card>
   <add-product :centerDialogVisible="centerDialogVisible" @closeDialog="closeDialog"/>
 </template>
@@ -66,8 +74,14 @@ import AddProduct from './AddProduct.vue'
 import {ElMessageBox, ElNotification} from "element-plus"
 
 function loadData(state) {
-  axios.get('/products').then(res => {
-    state.tableData = res.data
+  const params = {
+    pageNumber: state.currentPage,
+    pageSize: state.pageSize,
+    search: state.searchContent,
+  }
+  axios.get('/goods', { params }).then(res => {
+    state.tableData = res.data.list
+    state.total = res.data.totalCount //总的记录数
   })
 }
 
@@ -119,7 +133,10 @@ export default {
       tableData: [],
       imgBaseUrl: import.meta.env.VITE_APP_URL,
       searchContent: '',
-      centerDialogVisible: false
+      centerDialogVisible: false,
+      total: 0,
+      pageSize: 3,
+      currentPage: 1
     })
     onMounted(() => {
       loadData(state)
@@ -137,6 +154,7 @@ export default {
       loadData(state)
       state.centerDialogVisible = false
     }
+    // 删除
     const handleDelete = (index, row) => {
       ElMessageBox.confirm("你确定要删除该商品吗?", "提示", {
         confirmButtonText: "确定",
@@ -167,13 +185,19 @@ export default {
         },
       });
     }
+    // 页面改变
+    const changePage = (page) => {
+      state.currentPage = page
+      loadData(state)
+    }
     return {
       ...toRefs(state),
       // ...useDelete(state),
       handleSearch,
       addGoodsInfo,
       closeDialog,
-      handleDelete
+      handleDelete,
+      changePage
     }
   }
 }
