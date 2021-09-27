@@ -21,8 +21,7 @@
           class="avatar-uploader"
           :action="uploadURL"
           :show-file-list="false"
-          :on-success="handleAvatarSuccess"
-          :before-upload="handleBeforeUpload">
+          :on-success="handleAvatarSuccess">
           <img v-if="imageUrl" :src="imageUrl" class="avatar" />
           <i v-else class="el-icon-plus avatar-uploader-icon"></i>
         </el-upload>
@@ -83,15 +82,16 @@ export default {
       ]
     };
     const closeDialog = () => {
+      state.imageUrl = ''
       emit('closeDialog')
     }
     const submitConfirm = () => {
 
     }
     // 上传成功回掉
-    const handleAvatarSuccess = () => {}
-    // 上传前回调
-    const handleBeforeUpload = () => {}
+    const handleAvatarSuccess = (res) => {
+      state.imageUrl = import.meta.env.VITE_APP_URL + res.msg
+    }
     return {
       ...toRefs(state),
       rules,
@@ -99,13 +99,33 @@ export default {
       editor,
       closeDialog,
       submitConfirm,
-      handleAvatarSuccess,
-      handleBeforeUpload
+      handleAvatarSuccess
     }
   }
 }
 </script>
 
 <style scoped>
-
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.avatar-uploader .el-upload:hover {
+  border-color: #409eff;
+}
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+}
+.avatar {
+  width: 80px;
+  height: 80px;
+}
 </style>
