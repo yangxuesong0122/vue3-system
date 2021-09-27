@@ -49,9 +49,9 @@
         <template #default="scope">
           <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
           <el-button
-              size="mini"
-              type="danger"
-              @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+            size="mini"
+            type="danger"
+            @click="handleDelete(scope.$index, scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -63,12 +63,51 @@
 import {onMounted, reactive, toRefs} from 'vue'
 import axios from 'axios'
 import AddProduct from './AddProduct.vue'
+import {ElMessageBox, ElNotification} from "element-plus"
 
 function loadData(state) {
   axios.get('/products').then(res => {
     state.tableData = res.data
   })
 }
+
+//删除商品数据
+// function useDelete(state) {
+//   const handleDelete = (index, row) => {
+//     ElMessageBox.confirm("你确定要删除该记录吗?", "提示", {
+//       confirmButtonText: "确定",
+//       cancelButtonText: "取消",
+//       type: "warning",
+//       callback: (action) => {
+//         if (action === "confirm") {
+//           axios
+//               .delete("/goods/delete", { params: { id: row.id } })
+//               .then((res) => {
+//                 if (res.data.code === "ok") {
+//                   ElNotification({
+//                     title: "成功",
+//                     message: "删除成功",
+//                     type: "success",
+//                     duration: 2000,
+//                   });
+//                   loadData(state);
+//                 } else {
+//                   ElNotification({
+//                     title: "失败",
+//                     message: "删除失败",
+//                     type: "error",
+//                     duration: 2000,
+//                   });
+//                 }
+//               });
+//         }
+//       },
+//     });
+//   };
+//   return {
+//     handleDelete,
+//   };
+// }
 
 export default {
   name: "GoodsList",
@@ -94,15 +133,47 @@ export default {
       state.centerDialogVisible = true
     }
     // 关闭弹框
-    const closeDialog = (data) => {
+    const closeDialog = () => {
       loadData(state)
       state.centerDialogVisible = false
     }
+    const handleDelete = (index, row) => {
+      ElMessageBox.confirm("你确定要删除该商品吗?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+        callback: (action) => {
+          if (action === "confirm") {
+            axios.delete("/goods/delete", { params: { id: row.id } })
+              .then((res) => {
+                if (res.data.code === "ok") {
+                  ElNotification({
+                    title: "成功",
+                    message: "删除成功",
+                    type: "success",
+                    duration: 2000
+                  });
+                  loadData(state)
+                } else {
+                  ElNotification({
+                    title: "失败",
+                    message: "删除失败",
+                    type: "error",
+                    duration: 2000
+                  });
+                }
+              });
+          }
+        },
+      });
+    }
     return {
       ...toRefs(state),
+      // ...useDelete(state),
       handleSearch,
       addGoodsInfo,
-      closeDialog
+      closeDialog,
+      handleDelete
     }
   }
 }

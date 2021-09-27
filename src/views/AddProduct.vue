@@ -16,16 +16,17 @@
       <el-form-item label="商品价格" prop="price">
         <el-input v-model="goodsForm.price"></el-input>
       </el-form-item>
-<!--      <el-form-item label="商品图片" prop="coverImg">
+      <el-form-item label="商品图片" prop="coverImg">
         <el-upload
           class="avatar-uploader"
           :action="uploadURL"
           :show-file-list="false"
-          :on-success="handleAvatarSuccess">
+          :on-success="handleAvatarSuccess"
+          :before-upload="handleBeforeUpload">
           <img v-if="imageUrl" :src="imageUrl" class="avatar" />
           <i v-else class="el-icon-plus avatar-uploader-icon"></i>
         </el-upload>
-      </el-form-item>-->
+      </el-form-item>
       <el-form-item label="商品详情" prop="goodsDetail">
         <QuillEditor theme="snow" ref="editor"></QuillEditor>
       </el-form-item>
@@ -41,9 +42,10 @@
 
 <script>
 import {reactive, ref, toRefs} from "vue"
-import { QuillEditor } from "@vueup/vue-quill";
-import "@vueup/vue-quill/dist/vue-quill.snow.css";
-import axios from "axios";
+import { QuillEditor } from "@vueup/vue-quill"
+import "@vueup/vue-quill/dist/vue-quill.snow.css"
+import axios from "axios"
+import { ElMessage } from "element-plus"
 
 export default {
   name: "AddProduct",
@@ -106,6 +108,14 @@ export default {
         }
       })
     }
+    // 完成文件上传类型校验
+    const handleBeforeUpload = (file) => {
+      const arr = file.name.split(".")[1];
+      if (!["jpg", "jpeg", "png"].includes(arr)) {
+        ElMessage.error("请上传jpg,jpeg,png类型的图片文件");
+        return false;
+      }
+    };
     // 上传成功回掉
     const handleAvatarSuccess = (res) => {
       state.imageUrl = import.meta.env.VITE_APP_URL + res.msg
@@ -118,7 +128,8 @@ export default {
       editor,
       closeDialog,
       submitConfirm,
-      handleAvatarSuccess
+      handleAvatarSuccess,
+      handleBeforeUpload
     }
   }
 }
