@@ -16,7 +16,7 @@
       <el-form-item label="商品价格" prop="price">
         <el-input v-model="goodsForm.price"></el-input>
       </el-form-item>
-      <el-form-item label="商品图片" prop="coverImg">
+<!--      <el-form-item label="商品图片" prop="coverImg">
         <el-upload
           class="avatar-uploader"
           :action="uploadURL"
@@ -25,7 +25,7 @@
           <img v-if="imageUrl" :src="imageUrl" class="avatar" />
           <i v-else class="el-icon-plus avatar-uploader-icon"></i>
         </el-upload>
-      </el-form-item>
+      </el-form-item>-->
       <el-form-item label="商品详情" prop="goodsDetail">
         <QuillEditor theme="snow" ref="editor"></QuillEditor>
       </el-form-item>
@@ -43,6 +43,7 @@
 import {reactive, ref, toRefs} from "vue"
 import { QuillEditor } from "@vueup/vue-quill";
 import "@vueup/vue-quill/dist/vue-quill.snow.css";
+import axios from "axios";
 
 export default {
   name: "AddProduct",
@@ -74,9 +75,9 @@ export default {
     const rules = {
       title: [{ required: true, message: "请输入商品名称", trigger: "blur" }],
       price: [{ required: true, message: "请输入商品价格", trigger: "blur" }],
-      coverImg: [
-        { required: true, message: "请上传商品主图", trigger: "blur" },
-      ],
+      // coverImg: [
+      //   { required: true, message: "请上传商品主图", trigger: "blur" },
+      // ],
       goodsDetail: [
         { required: true, message: "请输入商品详情", trigger: "blur" },
       ]
@@ -86,11 +87,29 @@ export default {
       emit('closeDialog')
     }
     const submitConfirm = () => {
+      state.goodsForm.goodsDetail = editor.value.getText().replace(/(\r\n|\n|\r)/gm, "<br />") !== "<br />" ? editor.value.getHTML() : ""
+      validateForm.value.validate(valid => {
+        if (valid) {
+          const params = {
+            title: state.goodsForm.title,
+            price: state.goodsForm.price,
+            // thumbnail: state.goodsForm.coverImg,
+            goodsDetail: state.goodsForm.goodsDetail,
+          };
+          axios.post("/goods/add", params).then(res => {
+            validateForm.value.resetFields(); //重置表单
+            editor.value.setText("")
+            emit("closeDialog")
+          });
+        } else {
 
+        }
+      })
     }
     // 上传成功回掉
     const handleAvatarSuccess = (res) => {
       state.imageUrl = import.meta.env.VITE_APP_URL + res.msg
+      state.goodsForm.coverImg = res.msg
     }
     return {
       ...toRefs(state),
@@ -125,7 +144,8 @@ export default {
   text-align: center;
 }
 .avatar {
-  width: 80px;
-  height: 80px;
+  width: 178px;
+  height: 178px;
+  display: block;
 }
 </style>

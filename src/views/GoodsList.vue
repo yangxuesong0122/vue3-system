@@ -94,7 +94,8 @@ export default {
       state.centerDialogVisible = true
     }
     // 关闭弹框
-    const closeDialog = () => {
+    const closeDialog = (data) => {
+      loadData(state)
       state.centerDialogVisible = false
     }
     return {
