@@ -127,7 +127,7 @@ export default {
               resetForm()
             });
           } else {
-            params.goodsId = state.goodsId
+            params.goodsId = state.goodId
             axios.post("/goods/edit", params).then(res => {
               resetForm()
             });
