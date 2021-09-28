@@ -119,7 +119,7 @@ export default {
           const params = {
             title: state.goodsForm.title,
             price: state.goodsForm.price,
-            // thumbnail: state.goodsForm.coverImg,
+            thumbnail: state.goodsForm.coverImg,
             goodsDetail: state.goodsForm.goodsDetail,
           };
           if(state.dialogType === 'add') {
