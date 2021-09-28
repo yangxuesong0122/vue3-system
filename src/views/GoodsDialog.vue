@@ -88,7 +88,7 @@ export default {
       ]
     };
     const openDialog = ({ dialogType, dialogTitle, goodId }) => {
-      state.dialogTitle = dialogType
+      state.dialogType = dialogType
       state.dialogTitle = dialogTitle
       state.goodId = goodId
       if(goodId) {
@@ -128,7 +128,7 @@ export default {
             });
           } else {
             params.goodsId = state.goodsId
-            axios.post("/goods/edit", params).then((res) => {
+            axios.post("/goods/edit", params).then(res => {
               resetForm()
             });
           }
