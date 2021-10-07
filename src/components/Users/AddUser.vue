@@ -44,6 +44,7 @@
 <script>
 import { reactive, toRefs, ref } from "vue";
 import axios from "axios";
+
 function userCheckMail() {
   const checkMail = (rule, value, cb) => {
     const regEmail = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-])+/;

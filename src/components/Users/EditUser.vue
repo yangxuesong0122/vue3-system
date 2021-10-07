@@ -45,6 +45,7 @@
 <script>
 import { reactive, toRefs, ref, onMounted } from "vue";
 import axios from "axios";
+
 //自定义校验规则
 function useCheckMail() {
   const checkMail = (rule, value, cb) => {

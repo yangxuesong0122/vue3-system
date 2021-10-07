@@ -55,8 +55,9 @@ export default {
       activePath: ""
     });
     onMounted(() => {
-      getMenuData(state)
+      getMenuData()
       state.activePath = window.sessionStorage.getItem("activePath")
+      console.log(state.activePath)
     });
     const getMenuData = () => {
       axios.get("/menus").then(res => {
@@ -69,7 +70,7 @@ export default {
     }
     // 保存链接的激活状态
     const saveNavPath = activePath => {
-      window.sessionStorage.setItem("activePath", activePath);
+      window.sessionStorage.setItem("activePath", activePath)
       state.activePath = activePath
     }
     //用户退出登录

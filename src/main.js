@@ -8,15 +8,14 @@ import 'nprogress/nprogress.css'
 import axios from "axios"
 axios.defaults.baseURL = import.meta.env.VITE_APP_URL
 axios.interceptors.request.use((config) => {
-  console.log(config)
-  config.headers.Authorization = window.sessionStorage.getItem("token");
-  Nprogress.start();
-  return config;
-});
+  config.headers.Authorization = window.sessionStorage.getItem("token")
+  Nprogress.start()
+  return config
+})
 axios.interceptors.response.use((config) => {
-  Nprogress.done();
-  return config;
-});
+  Nprogress.done()
+  return config
+})
 
 const app = createApp(App)
 app.use(ElementPlus)
