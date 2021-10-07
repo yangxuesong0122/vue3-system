@@ -2,10 +2,10 @@
   <div class="login">
     <div class="login_box">
       <el-form
-          class="login_form"
-          :model="loginForm"
-          :rules="loginFormRules"
-          ref="loginFormRef">
+        class="login_form"
+        :model="loginForm"
+        :rules="loginFormRules"
+        ref="loginFormRef">
         <el-form-item prop="username">
           <el-input
             v-model="loginForm.username"
