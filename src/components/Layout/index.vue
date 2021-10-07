@@ -4,7 +4,7 @@
       <div class="header-div">
         <img src="../../assets/logo.png" alt="logo" />
         <span><router-link to="/">后台管理系统</router-link></span>
-        <el-button style="float: right" type="info" @click="logOut">退出</el-button>
+        <el-button style="float: right;margin-top: 10px" type="info" @click="logOut">退出</el-button>
       </div>
     </el-header>
     <el-container>
@@ -45,6 +45,7 @@
 import { onMounted, reactive, toRefs } from "vue"
 import axios from "axios"
 import router from "../../router"
+import { ElMessageBox, ElMessage } from 'element-plus'
 
 export default {
   setup() {
@@ -64,26 +65,46 @@ export default {
     }
     // 菜单的折叠与展示
     const openCollapse = () => {
-      state.isCollapse = !state.isCollapse;
+      state.isCollapse = !state.isCollapse
     }
     // 保存链接的激活状态
     const saveNavPath = activePath => {
       window.sessionStorage.setItem("activePath", activePath);
-      state.activePath = activePath;
+      state.activePath = activePath
     }
     //用户退出登录
     const logOut = () => {
-      window.sessionStorage.clear();
-      router.push("/login");
+      ElMessageBox.confirm(
+        '您确定要退出吗?',
+        '提示',
+        {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+      .then(() => {
+        ElMessage({
+          type: 'success',
+          message: '退出成功'
+        })
+        window.sessionStorage.clear()
+        router.push("/login")
+      })
+      .catch(() => {
+        ElMessage({
+          type: 'info',
+          message: '您已取消退出'
+        })
+      })
     }
     return {
       ...toRefs(state),
       openCollapse,
       logOut,
-      saveNavPath,
-    };
-  },
-};
+      saveNavPath
+    }
+  }
+}
 </script>
 <style>
 * {
